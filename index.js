@@ -12,8 +12,8 @@ import bodyParser from 'body-parser';
 
 // configuration
 const app = express();
-const port = 3000;
 dotenv.config();
+const port = process.env.PORT || 3000;
 
 // routers
 app.use('/user', userRouter);
@@ -27,11 +27,20 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan('common'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-app.use('/uploads',express.static('uploads'));
-app.use(express.urlencoded({limit:'30mb',extended:true}))
-app.use(helmet.crossOriginResourcePolicy({policy:'cross-origin'}))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
+app.use(express.urlencoded({ limit: '30mb', extended: true }));
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
-app.listen(port, () => {
+
+mongoose.connect(process.env.DB_URL)
+.then(()=>{
+	console.log('connected to the DB');
+	app.listen(port, () => {
 	console.log(`the app is listening at port: ${port}`);
 });
+})
+.catch((error)=>{
+	console.error('error connecting the DB: ', error.message)
+})
+
