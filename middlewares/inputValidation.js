@@ -17,8 +17,8 @@ export const ValidationResult = (req, res, next) => {
 //Cart
 // addToCart:
 export const addToCartValidation = [
-	check('userId').trim().notEmpty().withMessage('UserId is required').isMongoId.withMessage('Invalid user Id'),
-	check('productId').trim().notEmpty().withMessage('productId is required').isMongoId.withMessage('Invalid productId'),
+	check('userId').trim().notEmpty().withMessage('UserId is required').isMongoId().withMessage('Invalid user Id'),
+	check('productId').trim().notEmpty().withMessage('productId is required').isMongoId().withMessage('Invalid productId'),
 ];
 
 // remove
@@ -34,7 +34,7 @@ export const placeOrderValidation = [
 	check('userId').trim().notEmpty().withMessage('User ID is required').isMongoId().withMessage('Invalid User ID format'),
 
 	check('products').isArray({ min: 1 }).withMessage('Products array must contain at least one product'),
-	check('totalPrice').isInteger({ min: 0 }).withMessage('Total price must be a positive number').notEmpty().withMessage('Total price is required'),
+	check('totalPrice').isNumeric({ min: 0 }).withMessage('Total price must be a positive number').notEmpty().withMessage('Total price is required'),
 ];
 
 //Product -----------------------------------------------------

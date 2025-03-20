@@ -7,7 +7,6 @@ import { userInfoLogger, userErrorLogger } from '../middlewares/logger.js';
 export const registerUser = async (req, res) => {
 	try {
 		const { userName, email, password } = req.body;
-
 		// check if the user exist:
 		const checkUserName = await User.findOne({ userName });
 		const checkMail = await User.findOne({ email });
@@ -16,7 +15,7 @@ export const registerUser = async (req, res) => {
 			userErrorLogger.error('User already exist');
 		} else {
 			// create new user:
-			const encryptedPass = encrypt(password);
+			const encryptedPass = await encrypt(password);
 			const newUser = new User({
 				userName,
 				email,
@@ -47,7 +46,7 @@ export const loginUser = async (req, res) => {
 		} else {
 			const token = tokenLogic.createToken(user._id, user.role);
 			const setTimer = user.role == 'admin' ? 15 : 60; // 15m or 1h
-
+			const cookieData = {httpOnly: true, secure: 'production', sameSite: 'Strict'}
 			//send the token to the client side:
 			res.cookie('loginToken', token, { ...cookieData, maxAge: setTimer * 60 * 1000 });
 			res.status(200).json({ success: true, message: 'legged in successfully' });

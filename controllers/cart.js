@@ -12,7 +12,7 @@ export const addToCart = async (req, res) => {
 			if (!cart) {
 				const products = [];
 				products.push(productId);
-				newCart = new Cart({ userId, products, totalItemsInCart: 1, totalPrice: product.price });
+				const newCart = new Cart({ userId, products, totalItemsInCart: 1, totalPrice: product.price });
 				await newCart.save();
 			} else {
 				const tempProducts = cart.products;
@@ -69,6 +69,7 @@ export const removeFromCart = async (req, res) => {
 			const productIndex = cart.products.indexOf(productId); // -1 if not found
 			if (productIndex != -1) {
 				cart.products = cart.products.filter((product) => product !== productId);
+				cart.totalItemsInCart -= 1;
 				await cart.save();
 				res.status(201).json({ message: 'removed product from cart', success: true });
 				cartInfoLogger.info('removed product from cart');

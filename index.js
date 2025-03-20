@@ -15,12 +15,6 @@ const app = express();
 dotenv.config();
 const port = process.env.PORT || 3000;
 
-// routers
-app.use('/user', userRouter);
-app.use('/cart', cartRouter);
-app.use('/product', productRouter);
-app.use('/order', orderRouter);
-
 // middlewares
 app.use(cors());
 app.use(helmet());
@@ -32,15 +26,20 @@ app.use('/uploads', express.static('uploads'));
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
+// routers
+app.use('/user', userRouter);
+app.use('/cart', cartRouter);
+app.use('/product', productRouter);
+app.use('/order', orderRouter);
 
-mongoose.connect(process.env.DB_URL)
-.then(()=>{
-	console.log('connected to the DB');
-	app.listen(port, () => {
-	console.log(`the app is listening at port: ${port}`);
-});
-})
-.catch((error)=>{
-	console.error('error connecting the DB: ', error.message)
-})
-
+mongoose
+	.connect(process.env.DB_URL)
+	.then(() => {
+		console.log('connected to the DB');
+		app.listen(port, () => {
+			console.log(`the app is listening at port: ${port}`);
+		});
+	})
+	.catch((error) => {
+		console.error('error connecting the DB: ', error.message);
+	});
